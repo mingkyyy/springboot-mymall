@@ -3,9 +3,8 @@ package com.megait.mymall.service;
 import com.megait.mymall.domain.Member;
 import com.megait.mymall.domain.MemberType;
 import com.megait.mymall.repository.MemberRepository;
+import com.megait.mymall.util.MemberUser;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service // @Controller 와 @Repository 사이의 비지니스 로직 담당
@@ -51,13 +49,6 @@ public class MemberService implements UserDetailsService {
                 () -> new UsernameNotFoundException("미등록 계정")
         );
 
-
-        UserDetails userDetails = new User(
-                member.getEmail(),
-                member.getPassword(),
-                List.of(new SimpleGrantedAuthority(member.getMemberType().name()))
-                //set 으로 넣어도 됨!1 authority 는 ㄴㄴ 컬렉션 형으로 너어야 함!
-        );
-        return userDetails;
+        return new MemberUser(member);
     }
 }
