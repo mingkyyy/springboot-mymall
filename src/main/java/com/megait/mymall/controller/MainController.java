@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -53,37 +50,24 @@ public class MainController {
     }
 
 
-    /*@GetMapping("/mypage")
-    public String mypage(Model model, Principal principal) {
-        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow();
-        model.addAttribute("member", member);
-        return "member/mypage";
-    }*/
 
 
-    /*
-    @GetMapping("/mypage2")
-    public String mypage(Model model, @AuthenticationPrincipal User user){
-        if(user != null) {
-            Member member = memberRepository.findByEmail(user.getUsername()).orElseThrow();
-            model.addAttribute("member", member);
-        }
-        return "member/mypage";
-    }*/
-
-
-    @RequestMapping("/mypage2")
+    @RequestMapping("/mypage/{email}")
     public String mypage(Model model,
-                         @CurrentMember Member member){
+                         @CurrentMember Member member, @PathVariable String email){
 
         // #this   ==> 이 객체 (자바의 this를 의미함)
         //              이 곳에서의 this는 로그인 중인 User형 객체. ==> 시큐리티의 User 객체를 의미.
         // member ==> this.getNam
 
-        if(member != null) {
-            model.addAttribute("member", member);
+
+
+        if(member == null || !member.getEmail().equals(email)) { //로그인을 안 한 상태
+            return "rediredct:/";
         }
-        return "member/mypage";
+            model.addAttribute("member", member);
+            return "member/mypage";
+
     }
 
     @GetMapping("/signup")

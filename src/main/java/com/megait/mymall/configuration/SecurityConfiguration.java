@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                    .mvcMatchers("/","mypage2")
+                    .mvcMatchers("/")
                     .permitAll()
 
                      //주소가 mypage ~~ 이렇게 되는 놈들은 무조건 로그인 해야함!!
