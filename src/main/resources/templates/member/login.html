@@ -58,6 +58,13 @@
                                name = "remember-me" checked/>
                         <label class="form-check-label" for="rememberMe" aria-describedby="rememberMeHelp">로그인 유지</label>
                     </div>
+
+                    <hr class="col-12 my-4">
+                    <div>
+                        <a href="/oauth2/authorization/google" role="button"><img th:src="@{images/login_google_logo.svg}"></a>
+                        <a href="/oauth2/authorization/naver" role="button"><img th:src="@{images/login_naver_logo.svg}"></a>
+                    </div>
+
                     <!----------------------------------------------- -->
 
                     <hr class="col-12 my-4">
@@ -66,6 +73,8 @@
                     </div>
                 </form>
             </div>
+
+
 
         </main>
         <footer class="my-5 pt-5">

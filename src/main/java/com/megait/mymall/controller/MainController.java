@@ -16,14 +16,13 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
 
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private final MemberService memberService;
     private final MemberRepository memberRepository;
 
@@ -35,11 +34,12 @@ public class MainController {
 
 
     @RequestMapping("/")
-    public String index(Principal principal, Model model){
+    public String index(Model model, @CurrentMember Member member){
         String message = "안녕하세요, 손님!";
-        if(principal != null){
-            message = "안녕하세요, " + principal.getName() + "님!";
+        if(member != null){
+            message = "안녕하세요, " + member.getName() + "님!";
         }
+        model.addAttribute("member", member);
         model.addAttribute("msg", message);
         return "index";
     }
@@ -50,24 +50,36 @@ public class MainController {
     }
 
 
+    /*@GetMapping("/mypage")
+    public String mypage(Model model, Principal principal) {
+        Member member = memberRepository.findByEmail(principal.getName()).orElseThrow();
+        model.addAttribute("member", member);
+        return "member/mypage";
+    }*/
+
+
+    /*
+    @GetMapping("/mypage2")
+    public String mypage(Model model, @AuthenticationPrincipal User user){
+        if(user != null) {
+            Member member = memberRepository.findByEmail(user.getUsername()).orElseThrow();
+            model.addAttribute("member", member);
+        }
+        return "member/mypage";
+    }*/
 
 
     @RequestMapping("/mypage/{email}")
     public String mypage(Model model,
-                         @CurrentMember Member member, @PathVariable String email){
+                         @CurrentMember Member member,
+                         @PathVariable String email){
 
-        // #this   ==> 이 객체 (자바의 this를 의미함)
-        //              이 곳에서의 this는 로그인 중인 User형 객체. ==> 시큐리티의 User 객체를 의미.
-        // member ==> this.getNam
-
-
-
-        if(member == null || !member.getEmail().equals(email)) { //로그인을 안 한 상태
-            return "rediredct:/";
+        if(member == null || !member.getEmail().equals(email)) {
+            return "redirect:/";
         }
-            model.addAttribute("member", member);
-            return "member/mypage";
 
+        model.addAttribute("member", member);
+        return "member/mypage";
     }
 
     @GetMapping("/signup")
@@ -77,7 +89,8 @@ public class MainController {
     }
 
     @PostMapping("/signup")
-    public String signupSubmit(@Valid JoinFormVo vo, Errors errors){
+    public String signupSubmit(@Valid JoinFormVo joinFormVo, Errors errors){
+        log.info("joinFormVo : {}", joinFormVo);
         if(errors.hasErrors()){
             log.info("회원가입 에러 : {}", errors.getAllErrors());
             return "member/signup";
@@ -85,7 +98,7 @@ public class MainController {
 
         log.info("회원가입 정상!");
 
-        memberService.processNewMember(vo);
+        memberService.processNewMember(joinFormVo);
 
         return "redirect:/"; // "/" 로 리다이렉트
     }

@@ -49,6 +49,13 @@ public class Member {
     @ColumnDefault("'ROLE_USER'")
     private MemberType memberType;  // 회원 유형
 
+
+    private String name; //ㅅㅏ용자 이름
+
+    private AuthType authType; //일반, 네이버, 구글 - 인증 유형
+
+    private String picture; //사용자 프로필 사진 URL
+
     @ManyToMany(cascade = CascadeType.ALL)  // 다대다 양방향
     private List<Item> likes; // '좋아요'한 상품들
 
