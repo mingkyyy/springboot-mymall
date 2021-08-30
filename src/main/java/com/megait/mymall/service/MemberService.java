@@ -7,6 +7,7 @@ import com.megait.mymall.repository.MemberRepository;
 import com.megait.mymall.util.MemberUser;
 import com.megait.mymall.validation.JoinFormVo;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,12 +21,16 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Slf4j
 @Service // @Controller 와 @Repository 사이의 비지니스 로직 담당
 @RequiredArgsConstructor
 public class MemberService implements UserDetailsService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository memberRepository;
+    private final EmailService emailService;
+
+
 
     // 기본 관리자 계정 생성
     @PostConstruct  // MemberService 객체 생성 시 무조건 실행할 메서드
@@ -94,7 +99,7 @@ public class MemberService implements UserDetailsService {
      */
     public void processNewMember(JoinFormVo vo) {
         Member member = saveNewMember(vo);
-        sendEmail(member);
+        emailService.sendEmail(member);
         login(member);
     }
 
@@ -110,10 +115,6 @@ public class MemberService implements UserDetailsService {
                         .detailAddress(vo.getDetailAddress()).build())
                 .build();
         return memberRepository.save(member);
-    }
-
-    // TODO
-    private void sendEmail(Member member) {
     }
 
 
