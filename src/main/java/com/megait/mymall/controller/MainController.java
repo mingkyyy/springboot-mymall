@@ -1,7 +1,10 @@
 package com.megait.mymall.controller;
 
+import com.megait.mymall.domain.Album;
+import com.megait.mymall.domain.Book;
 import com.megait.mymall.domain.Member;
 import com.megait.mymall.repository.MemberRepository;
+import com.megait.mymall.service.ItemService;
 import com.megait.mymall.service.MemberService;
 import com.megait.mymall.util.CurrentMember;
 import com.megait.mymall.validation.JoinFormValidator;
@@ -17,17 +20,17 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
 @RequiredArgsConstructor
 public class MainController {
 
-
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final MemberService memberService;
     private final MemberRepository memberRepository;
-
+    private final ItemService itemService;
 
     @InitBinder("joinFormVo") // 요청 전에 추가할 설정들 (Controller 에서 사용)
     protected void initBinder(WebDataBinder dataBinder){
@@ -43,7 +46,17 @@ public class MainController {
         }
         model.addAttribute("member", member);
         model.addAttribute("msg", message);
+
+        // 앨범, 도서 상품 목록을 attribute로 추가
+        // 이름 : bookList, albumList
+        List<Book> bookList = itemService.getBookList();
+        List<Album> albumList = itemService.getAlbumList();
+
+        model.addAttribute("bookList", bookList);
+        model.addAttribute("albumList", albumList);
+
         return "index";
+        // index.html 에서 thymeleaf 사용해서 상품의 이름, 이미지, 가격 을 모두 출력
     }
 
     @GetMapping("/login")
@@ -108,20 +121,26 @@ public class MainController {
     @Transactional
     @GetMapping("/email-check")
     public String emailCheck(String email, String token, Model model){
+
         Optional<Member> optional = memberRepository.findByEmail(email);
         boolean result;
+
         if(optional.isEmpty()){
             result = false;
         }
         else if(! optional.get().getEmailCheckToken().equals(token)){
             result = false;
-        }else {
+        }
+        else {
             result = true;
             optional.get().setEmailVerified(true);
         }
-        model.addAttribute("email",email);
+
+        model.addAttribute("email", email);
         model.addAttribute("result", result);
+
         return "member/email-check-result";
     }
+
 
 }

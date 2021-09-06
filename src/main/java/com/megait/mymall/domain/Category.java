@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class Category {
 
-    @Id @GeneratedValue
+    @Id
     private Long id;
 
     @Column(nullable = false)

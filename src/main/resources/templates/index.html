@@ -26,6 +26,23 @@
             <button>로그아웃</button>
         </form>
     </div>
+
+    <div th:if="${albumList != null}">
+        <table>
+            <tr>
+                <th>음반명</th>
+                <th>이미지</th>
+                <th>가격</th>
+            </tr>
+            <tr th:each="album : ${albumList}">
+                <td th:text="*{name}"></td>
+                <td><img th:src="*{imageUrl}"></td>
+                <td th:text="*{price}"></td>
+            </tr>
+        </table>
+
+    </div>
+
 </div>
 </body>
 </html>
