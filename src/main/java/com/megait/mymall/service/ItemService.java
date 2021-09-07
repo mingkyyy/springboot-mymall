@@ -3,6 +3,7 @@ package com.megait.mymall.service;
 import com.megait.mymall.domain.Album;
 import com.megait.mymall.domain.Book;
 import com.megait.mymall.domain.Category;
+import com.megait.mymall.domain.Item;
 import com.megait.mymall.repository.AlbumRepository;
 import com.megait.mymall.repository.BookRepository;
 import com.megait.mymall.repository.CategoryRepository;
@@ -93,9 +94,7 @@ public class ItemService {
 
         });
 
-
     }
-
 
     public List<Book> getBookList() {
         return bookRepository.findAll();
@@ -104,4 +103,11 @@ public class ItemService {
     public List<Album> getAlbumList() {
         return albumRepository.findAll();
     }
+
+    public Item itemDetail(Long id){ //여기서 아이디를 찾아야 함
+        return itemRepository.findById(id).orElseThrow();
+
+    }
+
+
 }

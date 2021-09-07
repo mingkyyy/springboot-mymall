@@ -2,8 +2,11 @@ package com.megait.mymall.controller;
 
 import com.megait.mymall.domain.Album;
 import com.megait.mymall.domain.Book;
+import com.megait.mymall.domain.Item;
 import com.megait.mymall.domain.Member;
+import com.megait.mymall.repository.ItemRepository;
 import com.megait.mymall.repository.MemberRepository;
+import com.megait.mymall.service.BookService;
 import com.megait.mymall.service.ItemService;
 import com.megait.mymall.service.MemberService;
 import com.megait.mymall.util.CurrentMember;
@@ -31,6 +34,7 @@ public class MainController {
     private final MemberService memberService;
     private final MemberRepository memberRepository;
     private final ItemService itemService;
+    private final ItemRepository itemRepository;
 
     @InitBinder("joinFormVo") // 요청 전에 추가할 설정들 (Controller 에서 사용)
     protected void initBinder(WebDataBinder dataBinder){
@@ -65,6 +69,7 @@ public class MainController {
     }
 
 
+
     /*@GetMapping("/mypage")
     public String mypage(Model model, Principal principal) {
         Member member = memberRepository.findByEmail(principal.getName()).orElseThrow();
@@ -96,6 +101,20 @@ public class MainController {
         model.addAttribute("member", member);
         return "member/mypage";
     }
+
+
+
+    @GetMapping("/item/detail/{id}") //내가 클릭한 아이템 아이디 보내줘야 함
+    public String itemdetail(@PathVariable Long id, Model model){
+
+        Item item = itemService.itemDetail(id);
+
+        model.addAttribute("item",item);
+
+        return "item/detail";
+    }
+
+
 
     @GetMapping("/signup")
     public String signupForm(Model model){
