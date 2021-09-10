@@ -27,6 +27,8 @@ public class ItemService {
     private final CategoryService categoryService;
     private final MemberRepository memberRepository;
 
+
+
     @PostConstruct
     public void createItems() throws IOException{
         log.info("createItems()");
@@ -103,6 +105,12 @@ public class ItemService {
 
     public Item findItem(Long id) {
         return itemRepository.findById(id).orElseThrow();
+    }
+
+    public List<Item> getLikeList(Member member) {
+        member = memberRepository.findByEmail(member.getEmail())
+                .orElseThrow();
+        return member.getLikes();
     }
 
     @Transactional

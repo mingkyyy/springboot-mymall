@@ -116,8 +116,16 @@ public class MainController {
         return "item/detail";
     }
 
+    @GetMapping("/item/like-list")
+    public String likeList(@CurrentMember Member member, Model model){
+        List<Item> list = itemService.getLikeList(member);
+        model.addAttribute("likeList", list);
+        return "item/like";
+    }
+
+
     @GetMapping("/item/like/{id}")
-    @ResponseBody  // 리턴값을 뷰이름으로 인식하지 말고(포워드 하지 말라!),
+    @ResponseBody  // 리턴값을 뷰이름으로 인식하지 말고(포워드 하지 말라!)
     // 리턴값 자체를 response body에 넣어서 응답하라!
     public String itemLike(@PathVariable Long id,
                            @CurrentMember Member member,
@@ -153,6 +161,8 @@ public class MainController {
         }
 
 
+
+
         // 응답해줄 JSON 객체 생성 및 설정
         JSONObject jsonObject = new JSONObject();
         try {
@@ -165,7 +175,6 @@ public class MainController {
         // JSON 객체를 String 형태로 리턴.
         return jsonObject.toString();
     }
-
 
 
 
