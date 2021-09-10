@@ -123,6 +123,21 @@ public class MainController {
         return "item/like";
     }
 
+    @PostMapping("/cart/list")
+    @Transactional
+    public String addCart(@RequestParam("item_id") Long[] itemId, @CurrentMember Member member, Model model){
+        // 장바구니에 등록할 상품 id : 41, 31
+        // 41, 31 ==> Item 엔티티들 조회해온다.
+
+        // 로그인한 유저의 Cart 리스트에 상품 저장
+        itemService.addAllToCart(member, itemId);
+
+        //        "     Like 리스트에 상품 삭제
+        itemService.removeAllFromLikes(member, itemId);
+
+        // 찜목록 보기 실행
+        return likeList(member, model);
+    }
 
     @GetMapping("/item/like/{id}")
     @ResponseBody  // 리턴값을 뷰이름으로 인식하지 말고(포워드 하지 말라!)
